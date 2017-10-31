@@ -1,13 +1,133 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+	<script src="/socket.io/socket.io.js"></script>
     <script src="https://npmcdn.com/babel-core@5.8.38/browser.min.js"></script>
-    <script type="text/babel" >
+    <script type="text/babel">
         "use strict";
-    
+		
+		let canvas = document.querySelector('canvas');
+		let ctx = canvas.getContext('2d');
+		
+		var socket = {};
+		
+		let draws = {};
+		
+
+		const connectSocket = () => {
+			socket = io.connect();
+			socket.on('connect', () => {
+				console.log('connecting');
+				socket.emit('join', {});
+			});
+			
+			socket.on('msg', (data) => {
+				console.log(data);
+				chat.value = `${data.value}`;
+			});
+			
+			socket.on('drawFromServer', (data) => {
+				console.log(data);
+				handleMessage(data);
+			});
+		};
+		
+		const draw = () => {
+			ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+			let keys = Object.keys(draws);
+			
+			for (let i = 0; i < keys.length; i++){
+				const drawCall = draws[keys[i]];
+				
+				if(drawCall.color){
+					ctx.fillStyle = drawCall.color;
+				}
+				else{
+					ctx.fillStyle = "#bfbfbf";
+				}
+				
+				ctx.fillRect(drawCall.x, drawCall.y, 100, 100);
+			}
+		};
+		
+		const setCalls = (event) => {
+			const boundingClient = canvas.getBoundingClientRect();
+			const x = event.clientX - boundingClient.left;
+			const y = event.clientY - boundingClient.top;
+			
+			let time = new Date().getTime();
+			draws[time] = {x: x, y: y, color: "#ff0000"};
+
+			time = new Date().getTime();
+			let coords = {x: x, y: y};
+
+			socket.emit('draw', {time: time, coords: coords});
+			draw();
+		};
+		
+		
+		
+		const handleMessage = (data) => {
+			data.coords.color = "#0000ff"
+			draws[data.time] = data.coords;
+			draw();
+		};
+		
+		/*
+		canvas.addEventListener("click", (e) => {
+			this.onClick(e);
+		});
+		
+		onClick(evt) {
+			console.log(this);
+		}
+		
+		canvas.addEventListener('mouseclick', function(e){
+			var mousePos = getMousePos(canvas, e);
+			var message = 'Mouse position: ' + mousePos.x + ',' + mousePos.y;
+			console.log(`${mousePos.x},${mousePos.y}`);
+		});*/
+		
+		const init = () => {
+			connectSocket();
+			canvas.onmousedown = setCalls.bind(event);
+		};
+		
+		window.onload = init;
+		//setCalls();
     </script>
 </head>
 <body>
-
+	<canvas id="canvas" width="600" height="600" style="border:1px solid #000000;">
+		Your browser does not support the HTML5 canvas tag.
+	</canvas>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://npmcdn.com/babel-core@5.8.38/browser.min.js"></script>
+    <script type="text/babel" >
+        "use strict";
+		
+		var app = app || {};
+		
+		app.main = {
+			// variables
+			animationID: 0,
+			
+			canvas: undefined,
+			ctx: undefined,
+			
+			imageData: undefined,
+			
+			
+			init: function() {
+				// initiate properties for the canvas
+				this.canvas = document.querySelector('canvas');
+				this.ctx = this.canvas.getContext('2d');
+				
+				this.ctx.fillStyle = "#bfbfbf";
+				this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+				
+				
+				this.imageData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
+				this.update();
+			},
+			
+			update: function(){
+				
+				this.animationID = requestAnimationFrame(this.update.bind(this));
+				
+				//this.ctx.stroke();
+				this.clearScene();
+				//var deltaTime = this.calculateDeltaTime();
+				
+				//this.imageData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
+				
+				//this.ctx.rect(20 + (this.animationID / 20),20,150,100);
+				this.ctx.stroke();
+				
+				
+				//this.ctx.putImageData(this.imageData, 0, 0);
+			},
+			
+			clearScene: function() {
+				this.ctx.save();
+				this.ctx.fillStyle = "#bfbfbf";
+				this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+				this.ctx.restore();
+			}
+			
+		};
+		
+		window.onload = function(){
+			app.main.init();
+		};
+		/*const onRequest = () => {
+		  response.writeHead(200, { 'Content-Type': 'text/html' });
+		  response.write(index);
+		  response.end();
+		};*/
+    
+    </script>
+</head>
+<body>
+	<canvas id="canvas" width="600" height="600">
+	Your browser does not support the HTML5 canvas tag.
+	</canvas>
+</body>
+</html>
