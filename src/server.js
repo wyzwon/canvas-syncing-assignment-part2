@@ -38,7 +38,7 @@ const onMsg = (sock) => {
   const socket = sock;
 
   socket.on('msgToServer', (data) => {
-	io.sockets.in('room1').emit('msg', { name: socket.name, msg: data.msg });
+    io.sockets.in('room1').emit('msg', { name: socket.name, msg: data.msg });
   });
 };
 
@@ -46,8 +46,8 @@ const onDraw = (sock) => {
   const socket = sock;
 
   socket.on('draw', (data) => {
-	socket.broadcast.emit('drawFromServer', data)
-    //io.sockets.in('room1').emit('msg', { name: socket.name, msg: data.msg });
+    socket.broadcast.emit('drawFromServer', data);
+    // io.sockets.in('room1').emit('msg', { name: socket.name, msg: data.msg });
   });
 };
 
@@ -74,23 +74,4 @@ io.sockets.on('connection', (socket) => {
 });
 
 console.log('Websocket server started');
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
